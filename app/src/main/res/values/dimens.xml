@@ -6,4 +6,5 @@
     <dimen name="overview_size">15sp</dimen>
     <dimen name="date_size">20sp</dimen>
     <dimen name="rating_size">20sp</dimen>
+    <dimen name="button_size">15sp</dimen>
 </resources>

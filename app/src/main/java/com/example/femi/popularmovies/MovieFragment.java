@@ -3,11 +3,10 @@ package com.example.femi.popularmovies;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Movie;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -15,9 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.Toast;
+
+import com.example.femi.popularmovies.data.MovieContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,9 +30,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-
-import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
 
 /**
@@ -45,9 +41,24 @@ public class MovieFragment extends Fragment {
     private  GridView gridView;
     private ArrayList<Movies> moviesList;
 
+    private static final String[] MOVIE_PROJECTION = new String[] {
+            MovieContract.MovieEntry.COLUMN_MOVIE_ID,
+            MovieContract.MovieEntry.COLUMN_TITLE,
+            MovieContract.MovieEntry.COLUMN_OVERVIEW,
+            MovieContract.MovieEntry.COLUMN_DATE,
+            MovieContract.MovieEntry.COLUMN_POSTER,
+            MovieContract.MovieEntry.COLUMN_RATING
+    };
+
+    private static final int INDEX_MOVIE_ID = 0;
+    private static final int INDEX_MOVIE_TITLE = 1;
+    private static final int INDEX_MOVIE_OVERVIEW = 2;
+    private static final int INDEX_MOVIE_DATE = 3;
+    private static final int INDEX_MOVIE_POSTER = 4;
+    private static final int INDEX_MOVIE_RATING = 5;
 
 
-
+    
     @Override
     public void onCreate(Bundle savedInstanceState){
 
@@ -102,7 +113,8 @@ public class MovieFragment extends Fragment {
                         .putExtra("poster", movie.getPoster())
                         .putExtra("date", movie.getDate())
                         .putExtra("overview", movie.getOverview())
-                        .putExtra("rating", movie.getRating());
+                        .putExtra("rating", movie.getRating())
+                        .putExtra("id", movie.getId());
                 startActivity(intent);
 
             }
@@ -118,7 +130,53 @@ public class MovieFragment extends Fragment {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sort_by = prefs.getString(getString(R.string.pref_sorting_key),
                 getString(R.string.pref_sorting_popular));
+
+
+
+        if (sort_by.equals(getString(R.string.pref_sorting_favourite))){
+            Cursor cursor = getContext().getContentResolver().query(
+                    MovieContract.MovieEntry.CONTENT_URI,
+                    MOVIE_PROJECTION,
+                    null,
+                    null,
+                    null
+            );
+
+            if (cursor != null && cursor.getCount() > 0){
+                Movies[] resultMvs = new Movies[cursor.getCount()];
+                cursor.moveToFirst();
+                for (int i=0; i < cursor.getCount(); i++){
+                    int movie_id = cursor.getInt(INDEX_MOVIE_ID);
+                    String title = cursor.getString(INDEX_MOVIE_TITLE);
+                    String overview = cursor.getString(INDEX_MOVIE_OVERVIEW);
+                    String date = cursor.getString(INDEX_MOVIE_DATE);
+                    String poster = cursor.getString(INDEX_MOVIE_POSTER);
+                    Double rating = cursor.getDouble(INDEX_MOVIE_RATING);
+
+                    resultMvs[i]= new Movies();
+                    resultMvs[i].setPoster(poster);
+                    resultMvs[i].setOverview(overview);
+                    resultMvs[i].setRating(rating);
+                    resultMvs[i].setDate(date);
+                    resultMvs[i].setTitle(title);
+                    resultMvs[i].setId(movie_id);
+                    cursor.moveToNext();
+                }
+
+                moviesList = new ArrayList<Movies>(Arrays.asList(resultMvs));
+                mMovieAdapter = new MovieAdapter(getActivity(), moviesList);
+                gridView.setAdapter(mMovieAdapter);
+
+                cursor.close();
+            }
+
+            else {
+
+            }
+        }
+        else{
         fetchMovies.execute(sort_by);
+        }
 
     }
 
@@ -150,13 +208,14 @@ public class MovieFragment extends Fragment {
             final String M_RATING = "vote_average";
             final String M_DATE = "release_date";
             final String M_TITLE = "title";
+            final String M_ID = "id";
 
 
             JSONObject movieJson = new JSONObject(movieJsonStr);
             JSONArray movieArray = movieJson.getJSONArray(M_LIST);
 
 
-            Movies[] resultMvs = new  Movies[numOfMovies];
+            Movies[] resultMvs = new Movies[numOfMovies];
             for (int i = 0; i < movieArray.length(); i++){
 
 
@@ -165,6 +224,7 @@ public class MovieFragment extends Fragment {
                 Double rating;
                 String date;
                 String title;
+                int id;
 
 
                 JSONObject movie = movieArray.getJSONObject(i);
@@ -173,6 +233,7 @@ public class MovieFragment extends Fragment {
                 rating = movie.getDouble(M_RATING);
                 date = movie.getString(M_DATE);
                 title = movie.getString(M_TITLE);
+                id = movie.getInt(M_ID);
 
                 resultMvs[i]= new Movies();
                 resultMvs[i].setPoster(poster);
@@ -180,6 +241,7 @@ public class MovieFragment extends Fragment {
                 resultMvs[i].setRating(rating);
                 resultMvs[i].setDate(date);
                 resultMvs[i].setTitle(title);
+                resultMvs[i].setId(id);
 
             }
 

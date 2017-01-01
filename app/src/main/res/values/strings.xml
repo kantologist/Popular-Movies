@@ -11,4 +11,6 @@
     <string name="pref_sorting_top_rated">top_rated</string>
     <string name="pref_sorting_popular_label">Popular</string>
     <string name="pref_sorting_top_rated_label">Top Rated</string>
+    <string name="pref_sorting_favourite_label">Favourite</string>
+    <string name="pref_sorting_favourite">Favourite</string>
 </resources>

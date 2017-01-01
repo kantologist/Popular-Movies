@@ -1,12 +1,10 @@
 package com.example.femi.popularmovies;
 
+import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.os.Bundle;
-
-import static android.R.attr.value;
 
 public class SettingsActivity extends PreferenceActivity
                     implements Preference.OnPreferenceChangeListener{

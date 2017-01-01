@@ -55,6 +55,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/rating" />
+
+            <Button
+                android:text="Add to favourite"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:textSize="@dimen/button_size"
+                android:textColor="@color/textColor"
+                android:background="@color/colorAccent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/favourite"/>
+
+            <Button
+                android:text="See movie reviews"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:textSize="@dimen/button_size"
+                android:textColor="@color/textColor"
+                android:background="@color/colorAccent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/review"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -68,6 +88,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/overview" />
+
+    <TextView
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:layout_width="match_parent"
+        android:background="@color/textColor"
+        android:layout_height="1dp"
+        android:id="@+id/line"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:orientation="vertical"
+        android:id="@+id/main_trailer">
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:id="@+id/main_review">
+    </LinearLayout>
+
 
 
 </LinearLayout>

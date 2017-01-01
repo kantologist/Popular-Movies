@@ -13,6 +13,10 @@ public class Movies implements Parcelable{
     private Double mrating ;
     private String mdate ;
     private String mtitle ;
+    private int mId;
+    private String myoutubeKey;
+    private String mreviewContent;
+    private String mreviewUrl;
 
     public Movies(){
         mposter = "";
@@ -22,6 +26,35 @@ public class Movies implements Parcelable{
         mtitle = "";
     }
 
+    public void setYoutubeKey(String youtubeKey){
+        myoutubeKey = youtubeKey;
+    }
+    public String getYoutubeKey(){
+        return myoutubeKey;
+    }
+
+    public void setReviewContent(String reviewContent){
+        mreviewContent = reviewContent;
+    }
+
+    public String getReviewContent(){
+        return mreviewContent;
+    }
+
+    public void setReviewUrl(String reviewUrl){
+        mreviewUrl = reviewUrl;
+    }
+
+    public String getReviewUrl(){
+        return mreviewUrl;
+    }
+
+    public void setId(int id){
+        mId = id;
+    }
+    public int getId(){
+        return mId;
+    }
 
     public void setPoster(String poster){
         mposter = poster;
@@ -67,6 +100,7 @@ public class Movies implements Parcelable{
         mposter = in.readString();
         mrating = in.readDouble();
         mdate = in.readString();
+        mId = in.readInt();
     }
 
     @Override
@@ -81,6 +115,7 @@ public class Movies implements Parcelable{
         dest.writeString(mposter);
         dest.writeDouble(mrating);
         dest.writeString(mdate);
+        dest.writeInt(mId);
     }
 
     private void readFromParcel(Parcel in ) {
@@ -90,9 +125,10 @@ public class Movies implements Parcelable{
         moverview = in.readString();
         mposter = in.readString();
         mrating = in.readDouble();
+        mId = in.readInt();
     }
 
-    public final Parcelable.Creator<Movies> CREATOR = new Parcelable.Creator<Movies>(){
+    public final Creator<Movies> CREATOR = new Creator<Movies>(){
 
         @Override
         public Movies createFromParcel(Parcel source) {
