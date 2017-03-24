@@ -38,19 +38,18 @@ import java.util.List;
 
 import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
-
 /**
  * A simple {@link Fragment} subclass.
  */
 public class MovieFragment extends Fragment {
 
     private MovieAdapter mMovieAdapter;
-    private  GridView gridView;
+    private GridView gridView;
     private ArrayList<Movies> moviesList;
     private final String LOG_TAG = MovieFragment.class.getSimpleName();
     String sort_by;
 
-    private static final String[] MOVIE_PROJECTION = new String[] {
+    private static final String[] MOVIE_PROJECTION = new String[]{
             MovieContract.MovieEntry.COLUMN_MOVIE_ID,
             MovieContract.MovieEntry.COLUMN_TITLE,
             MovieContract.MovieEntry.COLUMN_OVERVIEW,
@@ -67,12 +66,11 @@ public class MovieFragment extends Fragment {
     private static final int INDEX_MOVIE_RATING = 5;
 
 
-    
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        if (savedInstanceState == null || !savedInstanceState.containsKey("movies")){
+        if (savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
             moviesList = new ArrayList<Movies>(Arrays.asList(new Movies()));
 
         } else {
@@ -83,13 +81,12 @@ public class MovieFragment extends Fragment {
     }
 
 
-
     public MovieFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState){
+    public void onSaveInstanceState(Bundle outState) {
 
         outState.putParcelableArrayList("movies", moviesList);
         outState.putString("preference", sort_by);
@@ -103,11 +100,9 @@ public class MovieFragment extends Fragment {
         // Inflate the layout for this fragment
 
         if (savedInstanceState == null || !savedInstanceState.containsKey("movies")
-                || !savedInstanceState.containsKey("preference")){
+                || !savedInstanceState.containsKey("preference")) {
             moviesList = new ArrayList<Movies>(Arrays.asList(new Movies()));
             Log.v(LOG_TAG, "fetched movies " + moviesList.get(0).getPoster());
-
-
 
 
         } else {
@@ -145,15 +140,14 @@ public class MovieFragment extends Fragment {
     }
 
 
-    private void updateMovies(){
+    private void updateMovies() {
         FetchMovies fetchMovies = new FetchMovies();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         sort_by = prefs.getString(getString(R.string.pref_sorting_key),
                 getString(R.string.pref_sorting_popular));
 
 
-
-        if (sort_by.equals(getString(R.string.pref_sorting_favourite))){
+        if (sort_by.equals(getString(R.string.pref_sorting_favourite))) {
             Cursor cursor = getContext().getContentResolver().query(
                     MovieContract.MovieEntry.CONTENT_URI,
                     MOVIE_PROJECTION,
@@ -162,10 +156,11 @@ public class MovieFragment extends Fragment {
                     null
             );
 
-            if (cursor != null && cursor.getCount() > 0){
-                Movies[] resultMvs = new  Movies[cursor.getCount()];
+            if (cursor != null && cursor.getCount() > 0) {
+
+                Movies[] resultMvs = new Movies[cursor.getCount()];
                 cursor.moveToFirst();
-                for (int i=0; i < cursor.getCount(); i++){
+                for (int i = 0; i < cursor.getCount(); i++) {
                     int movie_id = cursor.getInt(INDEX_MOVIE_ID);
                     String title = cursor.getString(INDEX_MOVIE_TITLE);
                     String overview = cursor.getString(INDEX_MOVIE_OVERVIEW);
@@ -173,7 +168,7 @@ public class MovieFragment extends Fragment {
                     String poster = cursor.getString(INDEX_MOVIE_POSTER);
                     Double rating = cursor.getDouble(INDEX_MOVIE_RATING);
 
-                    resultMvs[i]= new Movies();
+                    resultMvs[i] = new Movies();
                     resultMvs[i].setPoster(poster);
                     resultMvs[i].setOverview(overview);
                     resultMvs[i].setRating(rating);
@@ -188,42 +183,36 @@ public class MovieFragment extends Fragment {
                 gridView.setAdapter(mMovieAdapter);
 
                 cursor.close();
-            }
-
-            else {
+            } else {
 
             }
-        }
-        else{
-        fetchMovies.execute(sort_by);
+        } else {
+            fetchMovies.execute(sort_by);
         }
 
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String current_sort_by = prefs.getString(getString(R.string.pref_sorting_key),
                 getString(R.string.pref_sorting_popular));
-        if (moviesList.size() == 1 && !current_sort_by.equals(sort_by)){
+        if (moviesList.size() == 1 && !current_sort_by.equals(sort_by)) {
             updateMovies();
         }
     }
 
 
-
-    public class FetchMovies extends AsyncTask<String, Void, Movies[]>{
+    public class FetchMovies extends AsyncTask<String, Void, Movies[]> {
 
         private final String LOG_TAG = MovieFragment.class.getSimpleName();
         private static final String API_KEY = BuildConfig.API_KEY;
-        private final int numOfMovies=20;
-
-
+        private final int numOfMovies = 20;
 
 
         private Movies[] getMovieDataFromJson(String movieJsonStr)
-         throws JSONException{
+                throws JSONException {
 
             final String M_LIST = "results";
             final String M_POSTER = "poster_path";
@@ -238,8 +227,9 @@ public class MovieFragment extends Fragment {
             JSONArray movieArray = movieJson.getJSONArray(M_LIST);
 
 
-            Movies[] resultMvs = new  Movies[numOfMovies];
-            for (int i = 0; i < movieArray.length(); i++){
+            Movies[] resultMvs = new Movies[numOfMovies];
+
+            for (int i = 0; i < movieArray.length(); i++) {
 
 
                 String poster;
@@ -258,7 +248,7 @@ public class MovieFragment extends Fragment {
                 title = movie.getString(M_TITLE);
                 id = movie.getInt(M_ID);
 
-                resultMvs[i]= new Movies();
+                resultMvs[i] = new Movies();
                 resultMvs[i].setPoster(poster);
                 resultMvs[i].setOverview(overview);
                 resultMvs[i].setRating(rating);
@@ -268,15 +258,14 @@ public class MovieFragment extends Fragment {
 
             }
 
-            return  resultMvs;
-
+            return resultMvs;
 
 
         }
 
         @Override
         protected Movies[] doInBackground(String... params) {
-            if (params.length == 0){
+            if (params.length == 0) {
                 return null;
             }
 
@@ -306,7 +295,7 @@ public class MovieFragment extends Fragment {
 
                 InputStream inputStream = urlConnection.getInputStream();
                 StringBuffer buffer = new StringBuffer();
-                if (inputStream == null){
+                if (inputStream == null) {
                     return null;
                 }
 
@@ -314,11 +303,11 @@ public class MovieFragment extends Fragment {
 
                 String line;
 
-                while((line = reader.readLine()) != null) {
+                while ((line = reader.readLine()) != null) {
                     buffer.append(line + "\n");
                 }
 
-                if (buffer.length() == 0 ){
+                if (buffer.length() == 0) {
                     return null;
                 }
 
@@ -327,21 +316,21 @@ public class MovieFragment extends Fragment {
 
             } catch (IOException e) {
 
-                Log.e(LOG_TAG, "ERROR ",  e);
+                Log.e(LOG_TAG, "ERROR ", e);
 
                 return null;
 
             } finally {
 
 
-                if (urlConnection != null ){
+                if (urlConnection != null) {
                     urlConnection.disconnect();
                 }
 
-                if (reader != null){
-                    try{
+                if (reader != null) {
+                    try {
                         reader.close();
-                    } catch (final IOException e){
+                    } catch (final IOException e) {
                         Log.e(LOG_TAG, "Error closing stream", e);
                     }
                 }
@@ -349,11 +338,10 @@ public class MovieFragment extends Fragment {
 
             try {
                 return getMovieDataFromJson(movieJsonStr);
-            } catch (JSONException e){
+            } catch (JSONException e) {
                 Log.e(LOG_TAG, e.getMessage(), e);
                 e.printStackTrace();
             }
-
 
 
             return null;
@@ -362,9 +350,9 @@ public class MovieFragment extends Fragment {
 
 
         @Override
-        protected void onPostExecute(Movies[] result){
+        protected void onPostExecute(Movies[] result) {
 
-            if (result != null){
+            if (result != null) {
                 moviesList = new ArrayList<Movies>(Arrays.asList(result));
                 mMovieAdapter = new MovieAdapter(getActivity(), moviesList);
                 gridView.setAdapter(mMovieAdapter);

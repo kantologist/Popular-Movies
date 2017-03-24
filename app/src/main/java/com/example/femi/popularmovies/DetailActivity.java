@@ -158,6 +158,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
                 Movies[] resultMvs = new  Movies[movieArray.length()];
+
                 for (int i = 0; i < movieArray.length(); i++){
 
                     String content;

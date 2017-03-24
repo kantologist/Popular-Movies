@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+
 import com.example.femi.popularmovies.data.MovieContract.MovieEntry;
 
 /**

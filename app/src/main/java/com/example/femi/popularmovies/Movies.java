@@ -127,8 +127,8 @@ public class Movies implements Parcelable{
         mrating = in.readDouble();
         mId = in.readInt();
     }
-
     public final Parcelable.Creator<Movies> CREATOR = new Parcelable.Creator<Movies>(){
+
 
         @Override
         public Movies createFromParcel(Parcel source) {
