@@ -198,7 +198,7 @@ public class MovieFragment extends Fragment {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String current_sort_by = prefs.getString(getString(R.string.pref_sorting_key),
                 getString(R.string.pref_sorting_popular));
-        if (moviesList.size() == 1 && !current_sort_by.equals(sort_by)) {
+        if (moviesList.size() == 1 || !current_sort_by.equals(sort_by)) {
             updateMovies();
         }
     }
